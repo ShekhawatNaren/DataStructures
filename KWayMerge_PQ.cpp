@@ -11,17 +11,12 @@ public:
 	bool operator< (const mergeData& rhs) {
 		return key < rhs.key;
 	}
-	bool operator> (const mergeData& rhs) {
-		return key > rhs.key;
-	}
-	mergeData() :key{ }, vecPos{ }, vectorsInd{ } {
-
-	}
-	mergeData(int k, int iv, int index) :key{ k }, vecPos{ iv }, vectorsInd{ index }{}
+	mergeData() :key{ }, vecPos{ }, vectorsInd{ } {}
+	mergeData(int k, int iv, size_t index) :key{ k }, vecPos{ iv }, vectorsInd{ index }{}
 public:
 	int key;
 	int vecPos;
-	int vectorsInd;
+	size_t vectorsInd;
 };
 
 vector<int> kWayMerge(const vector<vector<int>>& listOfSortedVectors) {
@@ -32,7 +27,8 @@ vector<int> kWayMerge(const vector<vector<int>>& listOfSortedVectors) {
 		pq.push(mergeData(v[0], vecPos++, 0));
 	}
 	while (!pq.empty()) {
-		mergeData data = pq.extractMin();
+		mergeData data = pq.min();
+		pq.extractMin();
 		mergedVec.push_back(data.key);
 		if (listOfSortedVectors.at(data.vecPos).size() > data.vectorsInd + 1) {
 			data.vectorsInd++;
@@ -50,4 +46,3 @@ int main()
 	}
     return 0;
 }
-
