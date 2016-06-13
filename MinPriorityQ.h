@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-
+#include <map>
 using namespace std;
 template<typename KeyType, typename compare = less<KeyType>>
 class minPriorityQ {
@@ -29,21 +29,21 @@ public:
 		return _heap.at(1);
 	}
 	/*
-	Removes the minimum element and returns it
+	Removes the minimum element
+	Don't return the element to provide strong guarntee
+		If the function returns the template type and the user defined type 
+		raises exception while coping(during the return statement) the heap
+		will be left in bad state (element removed but not returned)
 	*/
-	KeyType extractMin() {
+	void extractMin() {
 		if (_heap.size() < 2) {//One is the element at 0th position which should not be considered
 			throw("Underflow error");
 		}
 		//First swap the first and last element
 		swap(_heap.at(1), _heap.back());
-		KeyType min = _heap.back();
 		_heap.pop_back();
-
 		//restore the min heap variant
 		sink_down(1);
-
-		return min;
 	}
 	/*
 	changes the key if it is lesser and restores the min priority queue invariant
@@ -67,6 +67,7 @@ public:
 	
 private:
 	vector<KeyType> _heap;
+
 	unsigned int parent(_uInt elementIndex) {
 		if (_heap.size() > 2)
 			return elementIndex / 2;
@@ -88,8 +89,8 @@ private:
 		_uInt leftIndex = left(elementIndex);
 		_uInt rightIndex = right(elementIndex);
 		_uInt smallestIndex = leftIndex;
-		while (leftIndex <= _heap.size()-1 && _heap.at(elementIndex) > _heap.at(leftIndex) ||
-			rightIndex <= _heap.size()-1 && _heap.at(elementIndex) > _heap.at(rightIndex)) {
+		while (leftIndex <= _heap.size()-1 && _heap.at(leftIndex) < _heap.at(elementIndex) ||
+			rightIndex <= _heap.size()-1 && _heap.at(rightIndex) < _heap.at(elementIndex)) {
 
 			//First check if left side is smallest
 			if (leftIndex <= _heap.size() - 1 && _heap.at(leftIndex) < _heap.at(elementIndex))
